@@ -81,7 +81,7 @@ endif()
 # ************** Executable  ****************
 # *******************************************
 
-add_executable(tetris_game src/main.cpp)
+add_executable(tetris_game src/tetris_game.cpp)
 target_link_libraries(tetris_game sfml-graphics sfml-window sfml-system)
 target_compile_definitions(tetris_game PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
 
