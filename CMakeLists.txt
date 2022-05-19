@@ -62,6 +62,7 @@ if(WIN32)
 endif()
 find_package(GEGELATI)
 
+
 if (WIN32)
     file(GLOB
             GEGELATI_DLL
@@ -81,8 +82,12 @@ endif()
 # ************** Executable  ****************
 # *******************************************
 
+include_directories(${GEGELATI_INCLUDE_DIRS})
+
 add_executable(tetris_game src/tetris_game.cpp)
 target_link_libraries(tetris_game sfml-graphics sfml-window sfml-system)
 target_compile_definitions(tetris_game PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
 
-message("Message : ${SFML_LIBRARIES}")
+
+add_executable(tetris src/Tetris.cpp src/Tetris.h src/main.cpp)
+target_link_libraries(tetris ${GEGELATI_LIBRARIES} sfml-graphics sfml-window sfml-system)
