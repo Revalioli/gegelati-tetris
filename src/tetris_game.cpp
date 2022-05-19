@@ -1,5 +1,6 @@
 /**
- * This file is an adapted version of the tetris clone you can get on the github repository https://github.com/Zedespook/tetris-clone
+ * This tetris game is an adapted version of the tetris clone you can get
+ * on the github repository https://github.com/Zedespook/tetris-clone
  */
 
 #include <SFML/Graphics.hpp>
@@ -31,8 +32,8 @@ struct Point {
 // their tiles in the 2*4 grid
 int shapes[7][4] = {
     1, 3, 5, 7, // I
-    2, 4, 5, 7, // Z
-    3, 5, 4, 6, // S
+    2, 4, 5, 7, // S
+    3, 5, 4, 6, // Z
     3, 5, 4, 7, // T
     2, 3, 5, 7, // L
     3, 5, 7, 6, // J
@@ -80,7 +81,7 @@ int main()
     RectangleShape tile_magenta(Vector2f(18.f, 18.f));
     tile_magenta.setFillColor(Color::Magenta);
 
-    RectangleShape* allTiles[7] = {&tile_cyan, &tile_red, &tile_green, &tile_magenta, &tile_orange, &tile_blue, &tile_yellow};
+    RectangleShape* allTiles[7] = {&tile_cyan, &tile_green, &tile_red, &tile_magenta, &tile_orange, &tile_blue, &tile_yellow};
 
     RectangleShape gridEdges(Vector2f(18.f * width, 18.f * height));
     gridEdges.setFillColor(Color::Transparent);
@@ -223,6 +224,7 @@ int main()
 
                 int n = rand() % 7;
                 currentTetrominoType = 1 + n;  // Choosing the next tetromino
+                std::cout << currentTetrominoType << std::endl;
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -288,7 +290,7 @@ int main()
             RectangleShape * tileToDraw = allTiles[currentTetrominoType - 1];
 
             tileToDraw->setPosition(currentPos[i].x * 18, currentPos[i].y * 18);
-//            window.draw(*allTiles[currentTetrominoType-1]);
+//            window.draw(*allTiles[activeTetrominoType-1]);
             window.draw(*tileToDraw);
         }
 
@@ -310,7 +312,7 @@ int main()
             sleep(endOfFrameDelay);
     }
 
-    std::cout << "Game over" << std::endl << "Final score : " << score;
+    std::cout << "Game over" << std::endl << "Final gameScore : " << score;
 
     return 0;
 }
