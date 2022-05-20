@@ -14,9 +14,9 @@ const int Tetris::FRAMES_PER_FALL = 20;
 const int Tetris::TETROMINO_TEMPLATES[7][4] = {
         1, 3, 5, 7, // I
         2, 4, 5, 7, // S
-        3, 5, 4, 6, // Z
+        3, 4, 5, 6, // Z
         3, 5, 4, 7, // T
-        2, 3, 5, 7, // L
+        2, 5, 3, 7, // L
         3, 5, 7, 6, // J
         2, 3, 4, 5  // O
 };
@@ -184,13 +184,33 @@ void Tetris::getNewTetromino(){
 
 void Tetris::rotateTetromino(Tetromino& t){
 
-    const sf::Vector2<int>& rotationPoint = t[1];
+    // Check for O tetromino because they don't rotate
+    if(activeTetrominoType != 7){
 
-    for(auto& block : t){
-        int x = block.y - rotationPoint.y;
-        int y = block.x - rotationPoint.x;
-        block.x = rotationPoint.x - x;
-        block.y = rotationPoint.y + y;
+        if(activeTetrominoType == 1){
+            // I tetromino don't have a central point of rotation
+            if(t[0].y == t[1].y){   // Tetromino is horizontal
+                t[0].x -= 2; t[0].y -= 2;
+                t[1].x -= 1; t[1].y -= 1;
+                t[3].x += 1; t[3].y += 1;
+            }
+            else{   // Tetromino is vertical
+                t[0].x += 2; t[0].y += 2;
+                t[1].x += 1; t[1].y += 1;
+                t[3].x -= 1; t[3].y -= 1;
+            }
+        }
+        else{
+            const sf::Vector2<int>& rotationPoint = t[1];
+
+            for(auto& block : t){
+                int x = block.y - rotationPoint.y;
+                int y = block.x - rotationPoint.x;
+                block.x = rotationPoint.x - x;
+                block.y = rotationPoint.y + y;
+            }
+        }
+
     }
 
 }
