@@ -72,6 +72,9 @@ protected:
     /// Rotate clockwise a tetromino
     void rotateTetromino(Tetromino& t);
 
+    /// Clear completed lines and update the game Score
+    void clearLines();
+
     /// Sets tile value at (x,y) in the grid.
     void setTileAt(int x, int y, double value);
 

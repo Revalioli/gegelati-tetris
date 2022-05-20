@@ -81,6 +81,7 @@ void Render::update() {
     this->window->draw(this->scoreTextLabel);
 
     this->scoreLabel.setPosition(this->tileSize * Tetris::WIDTH + 55, 80);
+    this->scoreLabel.setString(std::to_string(this->gameEnvironment.getGameScore()));
     this->window->draw(this->scoreLabel);
 
     this->window->draw(this->gridEdges);
