@@ -5,33 +5,96 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "Tetris.h"
-#include "Render.h"
+#include "instructions.h"
 
 int main(){
 
+    std::cout << "Start Tetris learning application" << std::endl;
+
+    /* === Learning environment and agent setup === */
+
+    // Loads the instruction set for the program
+    Instructions::Set set;
+    fillInstructionSet(set);
+
+    // Loads parameters from params.json
+    Learn::LearningParameters params;
+    File::ParametersParser::loadParametersFromJson(ROOT_DIR "/params.json", params);
+
+    // Instantiates the learning environment
     Tetris le;
-    le.playSolo();
 
-//    le.reset(6);
+    std::cout << "Number of threads: " << params.nbThreads << std::endl;
 
-//    Render render(le, 18);
-//    render.initialise();
+    // Instantiate and init the learning agent
+    Learn::ParallelLearningAgent la(le, set, params);
+    la.init();
 
-//    sf::Time timeToSleep = sf::milliseconds(500);
+    // TODO No console control mode
 
-//    std::cout << "Initial state" << std::endl;
-//    render.update();
+    std::atomic<bool> exitProgram = false; // (set to false by other thread)
 
-//    uint64_t actions[10] = { 0, 1, 1, 3, 3, 2, 2, 2, 4, 3};
-//    uint64_t actions[10] = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
 
-//    for(int i = 0; i < 10; i++){
-//        std::cout << "Turn " << i+1 << std::endl;
-//
-//        le.doAction(actions[i]);
-//        render.update();
-//
-//        sf::sleep(timeToSleep);
-//    }
+    /* === Log file setup === */
 
+    // Basic logger
+    Log::LABasicLogger basicLogger(la);
+
+    // Create an exporter for all graphs
+    File::TPGGraphDotExporter dotExporter("out_0000.dot", *la.getTPGGraph());
+
+    // Logging best policy stat.
+    std::ofstream stats;
+    stats.open("bestPolicyStats.md");
+    Log::LAPolicyStatsLogger policyStatsLogger(la, stats);
+
+    // Export parameters before starting training.
+    // These may differ from imported parameters because of LE or machine specific
+    // settings such as thread count of number of actions.
+    File::ParametersParser::writeParametersToJson("exported_params.json", params);
+
+    /* === Training === */
+
+    for(int i = 0; i < params.nbGenerations && !exitProgram; i++){
+
+        // Change name for exported TPG dot file for current generation
+        char buff[13];
+        sprintf(buff, "out_%04d.dot", i);
+        dotExporter.setNewFilePath(buff);
+        dotExporter.print();
+
+        la.trainOneGeneration(i);
+
+        // TODO No console control mode
+
+    }
+
+    // Keep best policy
+    la.keepBestPolicy();
+
+    // Clear introns instructions
+    la.getTPGGraph()->clearProgramIntrons();
+
+    // Export the graph
+    dotExporter.setNewFilePath("out_best.dot");
+    dotExporter.print();
+
+    // Export stats on the best policy
+    TPG::PolicyStats ps;
+    ps.setEnvironment(la.getTPGGraph()->getEnvironment());
+    ps.analyzePolicy(la.getBestRoot().first);
+    std::ofstream bestStats;
+    bestStats.open("out_best_stats.md");
+    bestStats << ps;
+    bestStats.close();
+    stats.close();
+
+    // Cleanup instructions
+    for (unsigned int i = 0; i < set.getNbInstructions(); i++) {
+        delete (&set.getInstruction(i));
+    }
+
+    // TODO No console control mode
+
+    return 0;
 }
