@@ -96,7 +96,7 @@ public:
     Tetris(const Tetris& other) = default;
 
     /// Destructor
-    ~Tetris() {};
+    ~Tetris() override = default;
 
     /* LearningEnvironment methods */
 
@@ -138,6 +138,9 @@ public:
     bool checkActiveTetromino();
 
     int getGameScore();
+
+    /// Starts a singleplayer Tetris game
+    void playSolo();
 
 };
 

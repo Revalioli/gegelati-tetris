@@ -22,13 +22,13 @@ Render::Render(Tetris &t, int tileSize) : gameEnvironment(t), tileSize(tileSize)
     this->tile_cyan.setFillColor(sf::Color::Cyan);
     this->tile_magenta.setFillColor(sf::Color::Magenta);
 
-    this->allTiles[0] = &tile_green;
-    this->allTiles[1] = &tile_red;
-    this->allTiles[2] = &tile_orange;
-    this->allTiles[3] = &tile_blue;
-    this->allTiles[4] = &tile_yellow;
-    this->allTiles[5] = &tile_cyan;
-    this->allTiles[6] = &tile_magenta;
+    this->allTiles[0] = &tile_cyan;
+    this->allTiles[1] = &tile_green;
+    this->allTiles[2] = &tile_red;
+    this->allTiles[3] = &tile_magenta;
+    this->allTiles[4] = &tile_orange;
+    this->allTiles[5] = &tile_blue;
+    this->allTiles[6] = &tile_yellow;
 
     this->gridEdges = sf::RectangleShape(
             sf::Vector2f(tileSize * gameEnvironment.WIDTH, tileSize * gameEnvironment.HEIGHT));
