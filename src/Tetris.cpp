@@ -128,6 +128,8 @@ void Tetris::doAction(uint64_t actionID) {
         for(auto& block : this->activeTetrominoPos)
             setTileAt(block.x, block.y, this->activeTetrominoType);
 
+        clearLines();
+
         getNewTetromino();
 
         if(!checkActiveTetromino()){
@@ -198,6 +200,31 @@ const Data::PrimitiveTypeArray2D<double>& Tetris::getGrid(){
 }
 
 int Tetris::getGameScore() { return this->gameScore; }
+
+void Tetris::clearLines() {
+
+    int k = HEIGHT-1;   // Destination line for falling lines
+
+    for(int line = HEIGHT-1; line > 0; line--){
+        int count = 0;
+
+        for(int tile = 0; tile < WIDTH; tile++){
+            double currentTile = getTileAt(tile, line);
+            if(currentTile != 0)
+                count++;
+
+            setTileAt(tile, k, currentTile);
+        }
+
+        if(count < WIDTH)
+            k--;
+    }
+
+    gameScore += k;
+
+}
+
+
 
 void Tetris::playSolo() {
     this->reset(time(nullptr));
