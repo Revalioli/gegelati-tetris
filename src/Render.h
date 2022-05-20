@@ -19,13 +19,13 @@ class Render {
     sf::RenderWindow* window;
 
     /// Coloured allTiles
-    sf::RectangleShape tile_green;      // I
-    sf::RectangleShape tile_red;        // S
-    sf::RectangleShape tile_orange;     // Z
-    sf::RectangleShape tile_blue;       // T
-    sf::RectangleShape tile_yellow;     // L
-    sf::RectangleShape tile_cyan;       // J
-    sf::RectangleShape tile_magenta;    // O
+    sf::RectangleShape tile_cyan;       // I
+    sf::RectangleShape tile_green;      // S
+    sf::RectangleShape tile_red;        // Z
+    sf::RectangleShape tile_magenta;    // T
+    sf::RectangleShape tile_orange;     // L
+    sf::RectangleShape tile_blue;       // J
+    sf::RectangleShape tile_yellow;     // O
 
     sf::RectangleShape* allTiles[7];
 
@@ -39,6 +39,8 @@ class Render {
     sf::Text scoreTextLabel;
     sf::Text scoreLabel;
 
+
+    friend class Tetris;
 
 public:
 

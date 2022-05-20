@@ -1,5 +1,9 @@
-#include "Tetris.h"
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Sleep.hpp>
+#include <SFML/Window/Event.hpp>
 
+#include "Tetris.h"
+#include "Render.h"
 
 const int Tetris::HEIGHT = 20;
 const int Tetris::WIDTH = 10;
@@ -32,7 +36,7 @@ void Tetris::reset(size_t seed, Learn::LearningMode mode) {
 
     // Placing block on grid
     for(auto& block : this->activeTetrominoPos)
-        setTileAt(block.x, block.y, activeTetrominoType);
+        setTileAt(block.x, block.y, this->activeTetrominoType);
 
     this->fallCounter = 0;
     this->gameScore = 0;
@@ -46,7 +50,7 @@ std::vector<std::reference_wrapper<const Data::DataHandler>> Tetris::getDataSour
 }
 
 double Tetris::getScore() const {
-    return gameScore;
+    return this->gameScore;
 }
 
 bool Tetris::isTerminal() const {
@@ -106,7 +110,7 @@ void Tetris::doAction(uint64_t actionID) {
 
     this->fallCounter++;
 
-    if(fallCounter == FRAMES_PER_FALL || this->accelerateFall){
+    if(this->fallCounter == FRAMES_PER_FALL || this->accelerateFall){
         for(auto& block : this->activeTetrominoPos)
             block.y += 1;
 
@@ -122,18 +126,18 @@ void Tetris::doAction(uint64_t actionID) {
 
         // Freezing tetromino in grid
         for(auto& block : this->activeTetrominoPos)
-            setTileAt(block.x, block.y, activeTetrominoType);
+            setTileAt(block.x, block.y, this->activeTetrominoType);
 
         getNewTetromino();
 
         if(!checkActiveTetromino()){
-            gameOver = true;
+            this->gameOver = true;
         }
     }
 
     // Replacing active tetromino in grid for learning agent
     for(auto& block : this->activeTetrominoPos)
-        setTileAt(block.x, block.y, activeTetrominoType);
+        setTileAt(block.x, block.y, this->activeTetrominoType);
 
 }
 
@@ -167,10 +171,10 @@ void Tetris::getNewTetromino(){
 
     for(int i = 0; i < 4; i++){
         // Column
-        activeTetrominoPos[i].x = TETROMINO_TEMPLATES[activeTetrominoType - 1][i] % 2
+        this->activeTetrominoPos[i].x = TETROMINO_TEMPLATES[this->activeTetrominoType - 1][i] % 2
                                   + TETROMINO_INITIAL_POSITION.x;
         // Line
-        activeTetrominoPos[i].y = TETROMINO_TEMPLATES[activeTetrominoType - 1][i] / 2
+        this->activeTetrominoPos[i].y = TETROMINO_TEMPLATES[this->activeTetrominoType - 1][i] / 2
                                   + TETROMINO_INITIAL_POSITION.y;
     }
 
@@ -190,7 +194,88 @@ void Tetris::rotateTetromino(Tetromino& t){
 }
 
 const Data::PrimitiveTypeArray2D<double>& Tetris::getGrid(){
-    return grid;
+    return this->grid;
 }
 
 int Tetris::getGameScore() { return this->gameScore; }
+
+void Tetris::playSolo() {
+    this->reset(time(nullptr));
+    int actionID = 0;
+
+    Render render(*this, 18);
+    render.initialise();
+    render.update();
+
+    int fps = 60;
+    sf::Clock clk;
+    sf::Time frameTime = sf::seconds(1.f/fps);
+
+    // To slow down the game for the human player
+    int framePerMove = 5;
+    int frameCounter = 0;
+
+    while(!isTerminal()){
+        clk.restart();
+
+        sf::Event event;
+        while (render.window->pollEvent(event))
+        {
+            switch (event.type)
+            {
+                case sf::Event::Closed:
+                    gameOver = true;
+                    break;
+
+                case sf::Event::KeyPressed:
+
+                    switch (event.key.code)
+                    {
+                        case sf::Keyboard::Up:
+                            actionID = 2;
+                            break;
+                        case sf::Keyboard::Left:
+                            actionID = 1;
+                            break;
+                        case sf::Keyboard::Right:
+                            actionID = 0;
+                            break;
+                        case sf::Keyboard::Down:
+                            actionID = 3;
+                            break;
+                        case sf::Keyboard::Escape:
+                            gameOver = true;
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        frameCounter++;
+        if(frameCounter >= framePerMove){
+            doAction(actionID);
+            actionID = 4;
+            frameCounter = 0;
+        }
+        else
+            doAction(4);
+
+        render.update();
+
+        sf::Time activeFrameTime = clk.getElapsedTime();
+        sf::Time endOfFrameDelay =  frameTime - activeFrameTime;
+        if(endOfFrameDelay.asMilliseconds() > 0)
+            sf::sleep(endOfFrameDelay);
+    }
+
+    render.close();
+
+    std::cout << "Game Over" << std::endl << "Score : " << this->gameScore << std::endl;
+
+}

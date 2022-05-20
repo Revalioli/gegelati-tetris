@@ -10,26 +10,28 @@
 int main(){
 
     Tetris le;
-    le.reset(6);
+    le.playSolo();
 
-    Render render(le, 18);
-    render.initialise();
+//    le.reset(6);
 
-    sf::Time timeToSleep = sf::milliseconds(500);
+//    Render render(le, 18);
+//    render.initialise();
 
-    std::cout << "Initial state" << std::endl;
-    render.update();
+//    sf::Time timeToSleep = sf::milliseconds(500);
 
-    uint64_t actions[10] = { 0, 1, 1, 3, 3, 2, 2, 2, 4, 3};
+//    std::cout << "Initial state" << std::endl;
+//    render.update();
+
+//    uint64_t actions[10] = { 0, 1, 1, 3, 3, 2, 2, 2, 4, 3};
 //    uint64_t actions[10] = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
 
-    for(int i = 0; i < 10; i++){
-        std::cout << "Turn " << i+1 << std::endl;
-
-        le.doAction(actions[i]);
-        render.update();
-
-        sf::sleep(timeToSleep);
-    }
+//    for(int i = 0; i < 10; i++){
+//        std::cout << "Turn " << i+1 << std::endl;
+//
+//        le.doAction(actions[i]);
+//        render.update();
+//
+//        sf::sleep(timeToSleep);
+//    }
 
 }
