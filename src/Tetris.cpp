@@ -192,3 +192,5 @@ void Tetris::rotateTetromino(Tetromino& t){
 const Data::PrimitiveTypeArray2D<double>& Tetris::getGrid(){
     return grid;
 }
+
+int Tetris::getGameScore() { return this->gameScore; }

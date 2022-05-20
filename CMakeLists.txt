@@ -89,5 +89,6 @@ target_link_libraries(tetris_game sfml-graphics sfml-window sfml-system)
 target_compile_definitions(tetris_game PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
 
 
-add_executable(tetris src/Tetris.cpp src/Tetris.h src/main.cpp)
+add_executable(tetris src/Tetris.cpp src/Tetris.h src/main.cpp src/Render.cpp src/Render.h)
 target_link_libraries(tetris ${GEGELATI_LIBRARIES} sfml-graphics sfml-window sfml-system)
+target_compile_definitions(tetris PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
