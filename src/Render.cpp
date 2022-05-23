@@ -1,8 +1,10 @@
 #include "Render.h"
+#include "Tetris.h"
 
 #include <iostream>
 #include <stdexcept>
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 
 Render::Render(Tetris &t, int tileSize) : gameEnvironment(t), tileSize(tileSize), isInitialised(false), window(nullptr) {
 
@@ -95,6 +97,108 @@ void Render::close() {
     this->window = nullptr;
 }
 
+
+
 Render::~Render() {
     delete window;
+}
+
+
+
+void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, const TPG::TPGVertex** bestRoot,
+                  const Instructions::Set& set, Tetris& tetrisLE, const Learn::LearningParameters& params,
+                  std::atomic<uint64_t>& generation, int seed){
+
+    /* Replay display */
+    Tetris simuEnv(tetrisLE);   // Tetris environment used for replay, is a deep copy of tetrisLE
+    Render replayRender(simuEnv);
+    replayRender.initialise();
+
+    /* Replay computation */
+    std::vector<uint64_t> replay;
+    Environment env(set, simuEnv.getDataSources(), params.nbRegisters, params.nbProgramConstant);
+    TPG::TPGExecutionEngine tee(env);
+    uint64_t frame = 0;
+
+    /* Replay control */
+    bool waitEndOfReplay = false;   // True if the current replay must end before playing the next one
+
+    std::cout << "---- Replay control ----" << std::endl
+                << "[W] : Toggle wait end of replay" << std::endl
+                << "[S] : Stop current replay" << std::endl;
+
+    bool isDisplay = false;
+    sf::Event event;
+    exit = false;
+
+    while(!exit){
+
+        if( resetDisplay && ( !waitEndOfReplay || (waitEndOfReplay && !isDisplay) )){
+            // Restarting tetris environments
+            tetrisLE.reset(seed, Learn::LearningMode::VALIDATION);
+            simuEnv.reset(seed, Learn::LearningMode::VALIDATION);
+
+            replay.clear();
+
+            // Computing replay
+            for(int i = 0; i < params.maxNbActionsPerEval && !tetrisLE.isTerminal(); i++){
+                auto vertexList = tee.executeFromRoot(**bestRoot);
+                const auto actionID = ((const TPG::TPGAction*)vertexList.back())->getActionID();
+                replay.push_back(actionID);
+                tetrisLE.doAction(actionID);
+            }
+
+            isDisplay = true;
+            frame = 0;
+            replayRender.update();
+
+            resetDisplay = false;
+        }
+
+        if(isDisplay){
+            // Playing one game frame
+            simuEnv.doAction(replay[frame]);
+            replayRender.update();
+
+            sf::sleep(sf::milliseconds(100));
+
+            frame++;
+            isDisplay = frame < replay.size();
+        }
+
+        while (replayRender.window->pollEvent(event)){
+
+            switch (event.type){
+                case sf::Event::Closed:
+                    exit = true;
+                    break;
+
+                case sf::Event::KeyPressed:
+
+                    switch (event.key.code) {
+                        case sf::Keyboard::Escape :
+                            exit = true;
+                            resetDisplay = false;   // In cas the main thread was waiting for a replay to end
+                            break;
+                        case sf::Keyboard::W :
+                            waitEndOfReplay = !waitEndOfReplay;
+                            std::cout << "Wait end of replay : " << waitEndOfReplay << std::endl;
+                            break;
+                        case sf::Keyboard::S :
+                            isDisplay = false;
+                            break;
+                        default :
+                            break;
+                    }
+
+                default:
+                    break;
+            }
+
+        }
+
+    }
+
+    replayRender.close();
+
 }

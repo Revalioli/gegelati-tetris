@@ -92,3 +92,7 @@ target_compile_definitions(tetris_game PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
 add_executable(tetris src/main.cpp src/Tetris.cpp src/Tetris.h src/Render.cpp src/Render.h src/instructions.cpp src/instructions.h)
 target_link_libraries(tetris ${GEGELATI_LIBRARIES} sfml-graphics sfml-window sfml-system)
 target_compile_definitions(tetris PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
+
+add_executable(tetris_no_replay src/main.cpp src/Tetris.cpp src/Tetris.h src/Render.cpp src/Render.h src/instructions.cpp src/instructions.h)
+target_link_libraries(tetris_no_replay ${GEGELATI_LIBRARIES} sfml-graphics sfml-window sfml-system)
+target_compile_definitions(tetris_no_replay PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}" NO_REPLAY)

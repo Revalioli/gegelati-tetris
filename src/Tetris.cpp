@@ -40,7 +40,19 @@ void Tetris::reset(size_t seed, Learn::LearningMode mode) {
 
     this->fallCounter = 0;
     this->gameScore = 0;
+    this->nbForbiddenMoves = 0;
+    this->nbPlayedTetrominos = 0;
+    this->nbGames++;
+
+    // std::cout << accumulateForbiddenMoves << std::endl;
+
     this->gameOver = false;
+}
+
+void Tetris::resetGlobalData(){
+    this->gameScoreRecord = 0;
+    this->accumulateForbiddenMoves = 0;
+    this->nbGames = 0;
 }
 
 std::vector<std::reference_wrapper<const Data::DataHandler>> Tetris::getDataSources() {
@@ -50,7 +62,7 @@ std::vector<std::reference_wrapper<const Data::DataHandler>> Tetris::getDataSour
 }
 
 double Tetris::getScore() const {
-    return this->gameScore;
+    return this->gameScore * 100 + this->nbPlayedTetrominos * 0.1 - this->nbForbiddenMoves;
 }
 
 bool Tetris::isTerminal() const {
@@ -106,6 +118,8 @@ void Tetris::doAction(uint64_t actionID) {
     if(!checkActiveTetromino()){
         for (int i = 0; i < 4; ++i)
             this->activeTetrominoPos[i] = this->lastTetrominoPos[i];
+
+        this->nbForbiddenMoves++;
     }
 
     this->fallCounter++;
@@ -131,9 +145,14 @@ void Tetris::doAction(uint64_t actionID) {
         clearLines();
 
         getNewTetromino();
+        this->nbPlayedTetrominos++;
 
         if(!checkActiveTetromino()){
             this->gameOver = true;
+            if(this->gameScore > this->gameScoreRecord)
+                this->gameScoreRecord = this->gameScore;
+
+            this->accumulateForbiddenMoves += this->nbForbiddenMoves;
         }
     }
 
@@ -220,6 +239,10 @@ const Data::PrimitiveTypeArray2D<double>& Tetris::getGrid(){
 }
 
 int Tetris::getGameScore() { return this->gameScore; }
+
+int Tetris::getGameScoreRecord() { return this->gameScoreRecord; }
+
+double Tetris::getAverageForbiddenMoves() { return (this->accumulateForbiddenMoves / (double)this->nbGames); }
 
 void Tetris::clearLines() {
 
