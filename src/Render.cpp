@@ -54,12 +54,12 @@ Render::Render(Tetris &t, int tileSize) : gameEnvironment(t), tileSize(tileSize)
 }
 
 void Render::initialise() {
-    window = new sf::RenderWindow(sf::VideoMode(this->tileSize * this->gameEnvironment.WIDTH + 140,
+    window = new sf::RenderWindow(sf::VideoMode(this->tileSize * this->gameEnvironment.WIDTH + 300,
                                                 this->tileSize * this->gameEnvironment.HEIGHT),
                                                 "Tetris LE view");
 }
 
-void Render::update() {
+void Render::update(bool display) {
     this->scoreLabel.setString(std::to_string(this->gameEnvironment.getGameScore()));
 
     this->window->clear();
@@ -88,7 +88,8 @@ void Render::update() {
 
     this->window->draw(this->gridEdges);
 
-    this->window->display();
+    if(display)
+        this->window->display();
 }
 
 void Render::close() {
@@ -127,6 +128,20 @@ void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, cons
                 << "[W] : Toggle wait end of replay" << std::endl
                 << "[S] : Stop current replay" << std::endl;
 
+    /* Render additional inforamtions */
+    sf::Text generationLabel("Generation : ", replayRender.font, 24);
+    generationLabel.setPosition(replayRender.tileSize * Tetris::WIDTH + 10, 110);
+    sf::Text generationNumberLabel("0", replayRender.font, 24);
+    generationNumberLabel.setPosition(replayRender.tileSize * Tetris::WIDTH + 170, 110);
+    sf::Text frameLabel("Frame :", replayRender.font, 24);
+    frameLabel.setPosition(replayRender.tileSize * Tetris::WIDTH + 10, 140);
+    sf::Text frameNumberLabel("0", replayRender.font, 24);
+    frameNumberLabel.setPosition(replayRender.tileSize * Tetris::WIDTH + 110, 140);
+    sf::Text moveLabel;
+    moveLabel.setFont(replayRender.font);
+    moveLabel.setCharacterSize(24);
+
+
     bool isDisplay = false;
     sf::Event event;
     exit = false;
@@ -148,9 +163,10 @@ void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, cons
                 tetrisLE.doAction(actionID);
             }
 
+            generationNumberLabel.setString(std::to_string(generation));
+
             isDisplay = true;
             frame = 0;
-            replayRender.update();
 
             resetDisplay = false;
         }
@@ -158,7 +174,17 @@ void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, cons
         if(isDisplay){
             // Playing one game frame
             simuEnv.doAction(replay[frame]);
-            replayRender.update();
+            replayRender.update(false);
+
+            // Drawing additional information
+            frameNumberLabel.setString(std::to_string(frame));
+
+            replayRender.window->draw(generationLabel);
+            replayRender.window->draw(generationNumberLabel);
+            replayRender.window->draw(frameLabel);
+            replayRender.window->draw(frameNumberLabel);
+
+            replayRender.window->display();
 
             sf::sleep(sf::milliseconds(100));
 

@@ -66,7 +66,7 @@ public:
     void initialise();
 
     /// Updates the window using the current data in the gameEnvironment.
-    void update();
+    void update(bool display = true);
 
     /// Closes the Render.
     void close();
