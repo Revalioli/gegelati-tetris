@@ -65,7 +65,7 @@
 			/* "nbActions" : 0,*/
 			// Number of root TPGTeams to maintain when populating the TPGGraph
 			// "nbRoots" : 100, // Default value
-			"nbRoots" : 2000,
+			"nbRoots" : 20,
 			// Probability of adding an outgoing Edge to a Team.
 			// "pEdgeAddition" : 0.7, // Default value
 			"pEdgeAddition" : 0.7,
@@ -86,7 +86,7 @@
 	// Number of generations of the training.
 	// "nbGenerations" : 500, // Default value
 	// "nbGenerations" : 1200,
-	"nbGenerations" : 20,
+	"nbGenerations" : 10,
 	// [Only used in AdversarialLearningAgent.]
 	// Number of times each job is evaluated in the learning process.
 	// Each root may belong to several jobs, hence this parameter should be lower

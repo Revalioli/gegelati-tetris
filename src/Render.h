@@ -4,6 +4,9 @@
 #include "Tetris.h"
 #include <SFML/Graphics.hpp>
 
+#include <thread>
+#include <atomic>
+
 class Render {
 
     /// The associated Tetris learning environment
@@ -42,6 +45,10 @@ class Render {
 
     friend class Tetris;
 
+    friend void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, const TPG::TPGVertex** bestRoot,
+                             const Instructions::Set& set, Tetris& tetrisLE, const Learn::LearningParameters& params,
+                             std::atomic<uint64_t>& generation, int seed);
+
 public:
 
     /**
@@ -64,6 +71,11 @@ public:
     /// Closes the Render.
     void close();
 };
+
+/// Displays a game played using a TPG
+void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, const TPG::TPGVertex** bestRoot,
+                  const Instructions::Set& set, Tetris& tetrisLE, const Learn::LearningParameters& params,
+                  std::atomic<uint64_t>& generation, int seed = 0);
 
 
 #endif //GEGELATI_TETRIS_RENDER_H

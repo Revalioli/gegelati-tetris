@@ -2,9 +2,9 @@
 #include <vector>
 
 #include <gegelati.h>
-#include <SFML/System/Vector2.hpp>
 
 #include "Tetris.h"
+#include "Render.h"
 #include "instructions.h"
 
 int main(){
@@ -28,13 +28,25 @@ int main(){
 
     // Instantiate and init the learning agent
     Learn::ParallelLearningAgent la(le, set, params);
+//    Learn::LearningAgent la(le, set, params);
     la.init();
 
-    // TODO No console control mode
+    const TPG::TPGVertex* bestRoot = nullptr;
 
-    std::atomic<bool> exitProgram = false; // (set to false by other thread)
+    /* === Render environment for replays === */
 
+#ifndef NO_REPLAY
+    std::atomic<bool> exitProgram = true; // (set to false by other thread)
+    std::atomic<bool> resetDisplay = false;
+    std::atomic<uint64_t> generation = 0;
 
+    std::thread replayThread(playFromRoot, std::ref(exitProgram), std::ref(resetDisplay), &bestRoot,
+                             std::ref(set), std::ref(le), std::ref(params), std::ref(generation), 0);
+
+    while(exitProgram); // replayThread will set exitProgram at false
+#else
+    std::atomic<bool> exitProgram = false;
+#endif
     /* === Log file setup === */
 
     // Basic logger
@@ -65,7 +77,18 @@ int main(){
 
         la.trainOneGeneration(i);
 
-        // TODO No console control mode
+        std::cout << "Best game score : " << le.getGameScoreRecord() << "   Average number of forbidden moves : " << le.getAverageForbiddenMoves() << std::endl;
+        le.resetGlobalData();
+
+#ifndef NO_REPLAY
+        generation = i;
+        if (!exitProgram){
+            bestRoot = la.getBestRoot().first;
+            resetDisplay = true;
+
+            while(resetDisplay);    // We let the Render use le to create a replay
+        }
+#endif
 
     }
 
@@ -94,7 +117,10 @@ int main(){
         delete (&set.getInstruction(i));
     }
 
-    // TODO No console control mode
+#ifndef NO_REPLAY
+    std::cout << "Training finished, press [escape] to close replay session." << std::endl;
+    replayThread.join();
+#endif
 
     return 0;
 }

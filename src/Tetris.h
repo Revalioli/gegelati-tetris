@@ -61,8 +61,27 @@ private:
     /// Randomness control, used for tetromino generation
     Mutator::RNG rng;
 
+    /* Scoring */
+
     /// Score of the game, currently the number of cleared lines
     int gameScore;
+
+    /// Number of forbidden movement since reset
+    int nbForbiddenMoves;
+
+    /// Number of played tetrominos since reset
+    int nbPlayedTetrominos;
+
+    /* Global scoring */
+
+    /// Best game score since instantiation or record reset
+    int gameScoreRecord;
+
+    /// Total number of forbidden moves since last global reset
+    double accumulateForbiddenMoves;
+
+    /// Total number of games launched (aka reset) since last global reset
+    int nbGames;
 
 protected:
 
@@ -89,6 +108,7 @@ public:
      * \brief Default constructor.
      */
     Tetris() : LearningEnvironment(NB_ACTIONS), gameScore(0), activeTetrominoType(0),
+               gameScoreRecord(0), accumulateForbiddenMoves(0), nbGames(0),
                grid(WIDTH, HEIGHT), gameOver(false), accelerateFall(false) {};
 
     /**
@@ -127,9 +147,11 @@ public:
     /// Gets tile value at (x,y) in the grid.
     double getTileAt(int x, int y) const;
 
-    /// Return a const reference to the grid PrimitiveTypeArray2D
+    /// Returns a const reference to the grid PrimitiveTypeArray2D
     const Data::PrimitiveTypeArray2D<double>& getGrid();
 
+    /// Resets global data field (such as gameScoreRecord)
+    void resetGlobalData();
 
     /* Game methods */
 
@@ -141,6 +163,10 @@ public:
     bool checkActiveTetromino();
 
     int getGameScore();
+
+    int getGameScoreRecord();
+
+    double getAverageForbiddenMoves();
 
     /// Starts a singleplayer Tetris game
     void playSolo();
