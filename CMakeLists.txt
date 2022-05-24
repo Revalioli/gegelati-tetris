@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.19)
 
 # *******************************************
 # ************* CMake Content ***************
@@ -96,3 +96,5 @@ target_compile_definitions(tetris PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
 add_executable(tetris_no_replay src/main.cpp src/Tetris.cpp src/Tetris.h src/Render.cpp src/Render.h src/instructions.cpp src/instructions.h)
 target_link_libraries(tetris_no_replay ${GEGELATI_LIBRARIES} sfml-graphics sfml-window sfml-system)
 target_compile_definitions(tetris_no_replay PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}" NO_REPLAY)
+
+add_custom_target(clean_dot rm ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/out_*.dot)
