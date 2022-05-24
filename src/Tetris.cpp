@@ -42,6 +42,7 @@ void Tetris::reset(size_t seed, Learn::LearningMode mode) {
     this->gameScore = 0;
     this->nbForbiddenMoves = 0;
     this->nbPlayedTetrominos = 0;
+    this->nbPlayedFrames = 0;
     this->nbGames++;
 
     // std::cout << accumulateForbiddenMoves << std::endl;
@@ -62,7 +63,7 @@ std::vector<std::reference_wrapper<const Data::DataHandler>> Tetris::getDataSour
 }
 
 double Tetris::getScore() const {
-    return this->gameScore * 100 + this->nbPlayedTetrominos * 0.1 - this->nbForbiddenMoves;
+    return this->gameScore * 100 + this->nbPlayedTetrominos - this->nbPlayedFrames * 0.001 - this->nbForbiddenMoves * 0.1;
 }
 
 bool Tetris::isTerminal() const {
@@ -82,6 +83,8 @@ void Tetris::doAction(uint64_t actionID) {
 
     if(isTerminal())
         return;
+
+    this->nbPlayedFrames++;
 
     // Remove active tetromino from the grid to avoid false collision when checking
     for(auto& block : this->activeTetrominoPos)
