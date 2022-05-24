@@ -97,4 +97,10 @@ add_executable(tetris_no_replay src/main.cpp src/Tetris.cpp src/Tetris.h src/Ren
 target_link_libraries(tetris_no_replay ${GEGELATI_LIBRARIES} sfml-graphics sfml-window sfml-system)
 target_compile_definitions(tetris_no_replay PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}" NO_REPLAY)
 
+
+add_executable(tetrisInference src/mainInference.cpp src/Tetris.cpp src/Tetris.h src/Render.cpp src/Render.h src/instructions.cpp src/instructions.h)
+target_link_libraries(tetrisInference ${GEGELATI_LIBRARIES} sfml-graphics sfml-window sfml-system)
+target_compile_definitions(tetrisInference PRIVATE ROOT_DIR="${CMAKE_SOURCE_DIR}")
+
+
 add_custom_target(clean_dot rm ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/out_*.dot)

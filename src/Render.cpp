@@ -108,7 +108,7 @@ Render::~Render() {
 
 void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, const TPG::TPGVertex** bestRoot,
                   const Instructions::Set& set, Tetris& tetrisLE, const Learn::LearningParameters& params,
-                  std::atomic<uint64_t>& generation, int seed){
+                  std::atomic<uint64_t>& generation, int seed, int replaySpeed){
 
     /* Replay display */
     Tetris simuEnv(tetrisLE);   // Tetris environment used for replay, is a deep copy of tetrisLE
@@ -123,6 +123,7 @@ void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, cons
 
     /* Replay control */
     bool waitEndOfReplay = false;   // True if the current replay must end before playing the next one
+    float sleepTime = 1.f/(float)replaySpeed;
 
     std::cout << "---- Replay control ----" << std::endl
                 << "[W] : Toggle wait end of replay" << std::endl
@@ -186,7 +187,7 @@ void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, cons
 
             replayRender.window->display();
 
-            sf::sleep(sf::milliseconds(100));
+            sf::sleep(sf::seconds(sleepTime));
 
             frame++;
             isDisplay = frame < replay.size();

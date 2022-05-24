@@ -47,7 +47,7 @@ class Render {
 
     friend void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, const TPG::TPGVertex** bestRoot,
                              const Instructions::Set& set, Tetris& tetrisLE, const Learn::LearningParameters& params,
-                             std::atomic<uint64_t>& generation, int seed);
+                             std::atomic<uint64_t>& generation, int seed, int replaySpeed);
 
 public:
 
@@ -72,10 +72,10 @@ public:
     void close();
 };
 
-/// Displays a game played using a TPG
+/// Displays a game played using a TPG (replaySpeed is in frames/seconds)
 void playFromRoot(std::atomic<bool>& exit, std::atomic<bool>& resetDisplay, const TPG::TPGVertex** bestRoot,
                   const Instructions::Set& set, Tetris& tetrisLE, const Learn::LearningParameters& params,
-                  std::atomic<uint64_t>& generation, int seed = 0);
+                  std::atomic<uint64_t>& generation, int seed = 0, int replaySpeed = 10);
 
 
 #endif //GEGELATI_TETRIS_RENDER_H
