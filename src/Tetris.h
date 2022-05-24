@@ -8,7 +8,6 @@
 ///  each tetromino having 4 blocks
 using Tetromino = sf::Vector2<int>[4];
 
-
 class Tetris : public Learn::LearningEnvironment {
 private:
 
@@ -72,6 +71,9 @@ private:
     /// Number of played tetrominos since reset
     int nbPlayedTetrominos;
 
+    /// Number of frames played since reset
+    int nbPlayedFrames;
+
     /* Global scoring */
 
     /// Best game score since instantiation or record reset
@@ -108,7 +110,7 @@ public:
      * \brief Default constructor.
      */
     Tetris() : LearningEnvironment(NB_ACTIONS), gameScore(0), activeTetrominoType(0),
-               gameScoreRecord(0), accumulateForbiddenMoves(0), nbGames(0),
+               gameScoreRecord(0), accumulateForbiddenMoves(0), nbGames(0), nbPlayedFrames(0),
                grid(WIDTH, HEIGHT), gameOver(false), accelerateFall(false) {};
 
     /**

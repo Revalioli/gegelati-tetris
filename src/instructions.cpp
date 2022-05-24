@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "instructions.h"
+#include "Tetris.h"
 
 void fillInstructionSet(Instructions::Set& set) {
     auto minus = [](double a, double b) -> double { return a - b; };
@@ -12,6 +13,28 @@ void fillInstructionSet(Instructions::Set& set) {
     auto cos = [](double a) -> double { return std::cos(a); };
     auto lt = [](double a, double b) -> double { return a < b ? a : b; };
 
+    auto lineDensity = [](const double line[10]) -> double {
+        int count = 0;
+        for(int i = 0; i < 10; i++){
+            if(line[i] > 0)
+                count++;
+        }
+
+        return (double)count / 10.0;
+    };
+
+    auto columnDensity = [](const double col[20][1]) -> double {
+        int count = 0;
+        for(int i = 0; i < 20; i++){
+            if(col[i][0] > 0)
+                count++;
+        }
+
+        return (double)count / 20.0;
+    };
+
+
+
     set.add(*(new Instructions::LambdaInstruction<double, double>(minus, "$0 = $1 - $2;")));
     set.add(*(new Instructions::LambdaInstruction<double, double>(add, "$0 = $1 + $2;")));
     set.add(*(new Instructions::LambdaInstruction<double, double>(mult, "$0 = $1 * $2;")));
@@ -20,4 +43,7 @@ void fillInstructionSet(Instructions::Set& set) {
     set.add(*(new Instructions::LambdaInstruction<double>(ln, "$0 = log($1);")));
     set.add(*(new Instructions::LambdaInstruction<double>(cos, "$0 = cos($1);")));
     set.add(*(new Instructions::LambdaInstruction<double, double>(lt, "$0 = $1 < $2 ? $1 : $2;")));
+
+    set.add(*(new Instructions::LambdaInstruction<const double[10]>(lineDensity)));
+    set.add(*(new Instructions::LambdaInstruction<const double [20][1]>(columnDensity)));
 }
