@@ -40,8 +40,10 @@ int main(){
     std::atomic<bool> resetDisplay = false;
     std::atomic<uint64_t> generation = 0;
 
+    int speedReplay = 30;   // in frames/seconds
+
     std::thread replayThread(playFromRoot, std::ref(exitProgram), std::ref(resetDisplay), &bestRoot,
-                             std::ref(set), std::ref(le), std::ref(params), std::ref(generation), 0);
+                             std::ref(set), std::ref(le), std::ref(params), std::ref(generation), 0, speedReplay);
 
     while(exitProgram); // replayThread will set exitProgram at false
 #else
