@@ -33,6 +33,7 @@ void fillInstructionSet(Instructions::Set& set) {
         return (double)count / 20.0;
     };
 
+    auto multByConst = [](double a, Data::Constant c) -> double { return a*(double)c; };
 
 
     set.add(*(new Instructions::LambdaInstruction<double, double>(minus, "$0 = $1 - $2;")));
@@ -46,4 +47,5 @@ void fillInstructionSet(Instructions::Set& set) {
 
     set.add(*(new Instructions::LambdaInstruction<const double[10]>(lineDensity)));
     set.add(*(new Instructions::LambdaInstruction<const double [20][1]>(columnDensity)));
+    set.add(*(new Instructions::LambdaInstruction<double, Data::Constant>(multByConst)));
 }
