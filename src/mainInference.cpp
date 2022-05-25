@@ -26,7 +26,6 @@ int main(int argc, char *argv[]){
     // Instantiates the learning environment
     Tetris le;
     size_t seed = 90;
-    le.reset(seed);
 
     // Loads graph from dot file
     Environment dotEnv(set, le.getDataSources(), params.nbRegisters, params.nbProgramConstant);
@@ -46,7 +45,7 @@ int main(int argc, char *argv[]){
     std::atomic<uint64_t> generation = 0;   // Not used here
 
     std::thread replayThread(playFromRoot, std::ref(exitProgram), std::ref(resetDisplay), &root,
-                             std::ref(set), std::ref(le), std::ref(params), std::ref(generation), 2, replaySpeed);
+                             std::ref(set), std::ref(le), std::ref(params), std::ref(generation), seed, replaySpeed);
 
     while(exitProgram); // replayThread will set exitProgram at false
 
