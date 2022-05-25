@@ -33,6 +33,7 @@ void Tetris::reset(size_t seed, Learn::LearningMode mode) {
         this->grid.setDataAt(typeid(double), i, 0.0);
 
     this->getNewTetromino();
+    this->nbTetroRotations = 0;
 
     // Placing block on grid
     for(auto& block : this->activeTetrominoPos)
@@ -63,7 +64,7 @@ std::vector<std::reference_wrapper<const Data::DataHandler>> Tetris::getDataSour
 }
 
 double Tetris::getScore() const {
-    return this->gameScore * 100 + this->nbPlayedTetrominos - this->nbPlayedFrames * 0.001 - this->nbForbiddenMoves * 0.1;
+    return this->gameScore * 100 + this->nbPlayedTetrominos - this->nbForbiddenMoves * 0.1;
 }
 
 bool Tetris::isTerminal() const {
@@ -107,6 +108,7 @@ void Tetris::doAction(uint64_t actionID) {
         // Rotate
         case 2:
             rotateTetromino(this->activeTetrominoPos);
+            this->nbTetroRotations++;
             break;
         // Accelerate fall
         case 3:
@@ -122,7 +124,15 @@ void Tetris::doAction(uint64_t actionID) {
         for (int i = 0; i < 4; ++i)
             this->activeTetrominoPos[i] = this->lastTetrominoPos[i];
 
+        if(actionID == 2)
+            this->nbTetroRotations--;
+
         this->nbForbiddenMoves++;
+    }
+
+    if(this->nbTetroRotations == 4){
+        this->nbTetroRotations = 0;
+        this->nbForbiddenMoves += 4;
     }
 
     this->fallCounter++;

@@ -74,6 +74,9 @@ private:
     /// Number of frames played since reset
     int nbPlayedFrames;
 
+    /// Buffer to store the number of rotation done for each tetromino
+    int nbTetroRotations;
+
     /* Global scoring */
 
     /// Best game score since instantiation or record reset
