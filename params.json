@@ -85,7 +85,7 @@
 	},
 	// Number of generations of the training.
 	// "nbGenerations" : 500, // Default value
-	"nbGenerations" : 500,
+	"nbGenerations" : 400,
 	// [Only used in AdversarialLearningAgent.]
 	// Number of times each job is evaluated in the learning process.
 	// Each root may belong to several jobs, hence this parameter should be lower

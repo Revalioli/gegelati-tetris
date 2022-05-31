@@ -44,6 +44,7 @@ void Tetris::reset(size_t seed, Learn::LearningMode mode) {
     this->nbForbiddenMoves = 0;
     this->nbPlayedTetrominos = 0;
     this->nbPlayedFrames = 0;
+    this->rewardBonus = 0;
     this->nbGames++;
 
     // std::cout << accumulateForbiddenMoves << std::endl;
@@ -64,7 +65,7 @@ std::vector<std::reference_wrapper<const Data::DataHandler>> Tetris::getDataSour
 }
 
 double Tetris::getScore() const {
-    return this->gameScore * 100 + this->nbPlayedTetrominos - this->nbForbiddenMoves * 0.1;
+    return this->gameScore * 100 + this->nbPlayedTetrominos - this->nbForbiddenMoves * 0.05 + this->rewardBonus;
 }
 
 bool Tetris::isTerminal() const {
@@ -159,6 +160,10 @@ void Tetris::doAction(uint64_t actionID) {
 
         getNewTetromino();
         this->nbPlayedTetrominos++;
+
+        // Played frames malus computation
+        this->rewardBonus -= exp((double)this->nbPlayedFrames/300.0);
+        this->nbPlayedFrames = 0;
 
         if(!checkActiveTetromino()){
             this->gameOver = true;

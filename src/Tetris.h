@@ -71,11 +71,14 @@ private:
     /// Number of played tetrominos since reset
     int nbPlayedTetrominos;
 
-    /// Number of frames played since reset
+    /// Number of frames played since generation of the current tetromino
     int nbPlayedFrames;
 
     /// Buffer to store the number of rotation done for each tetromino
     int nbTetroRotations;
+
+    /// Reward bonus (or malus if negative) from various sources
+    double rewardBonus;
 
     /* Global scoring */
 
@@ -113,7 +116,7 @@ public:
      * \brief Default constructor.
      */
     Tetris() : LearningEnvironment(NB_ACTIONS), gameScore(0), activeTetrominoType(0),
-               gameScoreRecord(0), accumulateForbiddenMoves(0), nbGames(0), nbPlayedFrames(0),
+               gameScoreRecord(0), accumulateForbiddenMoves(0), nbGames(0), nbPlayedFrames(0), rewardBonus(0),
                grid(WIDTH, HEIGHT), gameOver(false), accelerateFall(false) {};
 
     /**
