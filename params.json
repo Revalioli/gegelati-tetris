@@ -1,10 +1,10 @@
 {
 	// Number of recordings held in the Archive.
 	// "archiveSize" : 50, // Default value
-	"archiveSize" : 2000,
+	"archiveSize" : 1000,
 	// Probability of archiving the result of each Program execution.
 	// "archivingProbability" : 0.05, // Default value
-	"archivingProbability" : 0.01,
+	"archivingProbability" : 0.05,
 	// Boolean used to activate an evaluation of the surviving roots in validation
 	// mode after the training at each generation.
 	// "doValidation" : false, // Default value
@@ -17,7 +17,7 @@
 	// reached, possibly after several generations, the score of the root will be
 	// fixed, and no further evaluation will be done.
 	// "maxNbEvaluationPerPolicy" : 1000, // Default value
-	"maxNbEvaluationPerPolicy" : 10,
+	"maxNbEvaluationPerPolicy" : 15,
 	"mutation" : 
 	{
 		"prog" : 
@@ -33,13 +33,13 @@
 			"minConstValue" : -10,
 			// Probability of inserting a line in the Program.
 			// "pAdd" : 0.5, // Default value
-			"pAdd" : 0.5,
+			"pAdd" : 0.7,
 			// Probability of each constant to be mutated.
 			// "pConstantMutation" : 0.5, // Default value
 			"pConstantMutation" : 0.5,
 			// Probability of deleting a line of the Program.
 			// "pDelete" : 0.5, // Default value
-			"pDelete" : 0.5,
+			"pDelete" : 0.7,
 			// Probability of altering a line of the Program.
 			// "pMutate" : 1.0, // Default value
 			"pMutate" : 1.0,
@@ -65,7 +65,7 @@
 			/* "nbActions" : 0,*/
 			// Number of root TPGTeams to maintain when populating the TPGGraph
 			// "nbRoots" : 100, // Default value
-			"nbRoots" : 20,
+			"nbRoots" : 1500,
 			// Probability of adding an outgoing Edge to a Team.
 			// "pEdgeAddition" : 0.7, // Default value
 			"pEdgeAddition" : 0.7,
@@ -85,8 +85,7 @@
 	},
 	// Number of generations of the training.
 	// "nbGenerations" : 500, // Default value
-	// "nbGenerations" : 1200,
-	"nbGenerations" : 10,
+	"nbGenerations" : 500,
 	// [Only used in AdversarialLearningAgent.]
 	// Number of times each job is evaluated in the learning process.
 	// Each root may belong to several jobs, hence this parameter should be lower

@@ -49,10 +49,18 @@ int main(){
 #else
     std::atomic<bool> exitProgram = false;
 #endif
-    /* === Log file setup === */
+    /* === Log logFile setup === */
 
-    // Basic logger
+    // Basic logger for std::out
     Log::LABasicLogger basicLogger(la);
+
+    // Basic logger to logFile
+    std::shared_ptr<Log::LABasicLogger> fileLogger;
+    std::ofstream logFile("log");
+    if(logFile.is_open())
+        fileLogger = std::make_shared<Log::LABasicLogger>(la, logFile);
+    else
+        std::cerr << "Can't save logs, logFile opening failed" << std::endl;
 
     // Create an exporter for all graphs
     File::TPGGraphDotExporter dotExporter("out_0000.dot", *la.getTPGGraph());
@@ -71,7 +79,7 @@ int main(){
 
     for(int i = 0; i < params.nbGenerations && !exitProgram; i++){
 
-        // Change name for exported TPG dot file for current generation
+        // Change name for exported TPG dot logFile for current generation
         char buff[13];
         sprintf(buff, "out_%04d.dot", i);
         dotExporter.setNewFilePath(buff);
@@ -118,6 +126,8 @@ int main(){
     for (unsigned int i = 0; i < set.getNbInstructions(); i++) {
         delete (&set.getInstruction(i));
     }
+
+    logFile.close();
 
 #ifndef NO_REPLAY
     std::cout << "Training finished, press [escape] to close replay session." << std::endl;
