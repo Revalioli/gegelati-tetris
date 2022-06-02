@@ -162,7 +162,7 @@ void Tetris::doAction(uint64_t actionID) {
         this->nbPlayedTetrominos++;
 
         // Played frames malus computation
-        this->rewardBonus -= exp((double)this->nbPlayedFrames/300.0);
+        this->rewardBonus -= (exp((double)this->nbPlayedFrames/300.0) - 1);
         this->nbPlayedFrames = 0;
 
         if(!checkActiveTetromino()){

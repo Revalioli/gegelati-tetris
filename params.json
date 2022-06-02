@@ -1,7 +1,7 @@
 {
 	// Number of recordings held in the Archive.
 	// "archiveSize" : 50, // Default value
-	"archiveSize" : 1000,
+	"archiveSize" : 2000,
 	// Probability of archiving the result of each Program execution.
 	// "archivingProbability" : 0.05, // Default value
 	"archivingProbability" : 0.05,
@@ -27,7 +27,7 @@
 			"maxConstValue" : 10,
 			// Maximum number of Line within the Program of the TPG.
 			// "maxProgramSize" : 96, // Default value
-			"maxProgramSize" : 20,
+			"maxProgramSize" : 25,
 			// Minimum constant value possible.
 			// "minConstValue" : -10, // Default value
 			"minConstValue" : -10,
@@ -58,7 +58,7 @@
 			"maxInitOutgoingEdges" : 3,
 			// Maximum number of outgoing edge during TPGGraph mutations.
 			// "maxOutgoingEdges" : 5, // Default value
-			"maxOutgoingEdges" : 5,
+			"maxOutgoingEdges" : 8,
 			// Number of TPGAction vertex of the initialized TPGGraph.
 			// This parameter is generally automatically set by the LearningEnvironment.
 			// /* "nbActions" : 0,*/ // Commented by default

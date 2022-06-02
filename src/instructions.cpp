@@ -33,6 +33,15 @@ void fillInstructionSet(Instructions::Set& set) {
         return (double)count / 20.0;
     };
 
+    // For one column, computes the number of consecutive blocs starting from the bottom of the screen
+    auto columnStack =  [](const double col[20][1]) -> double {
+        int count = 0;
+        for(int i = 19; i >= 0 && col[i][0] > 0; i--)
+            count++;
+
+        return count;
+    };
+
     auto multByConst = [](double a, Data::Constant c) -> double { return a*(double)c; };
 
 
@@ -48,4 +57,5 @@ void fillInstructionSet(Instructions::Set& set) {
     set.add(*(new Instructions::LambdaInstruction<const double[10]>(lineDensity)));
     set.add(*(new Instructions::LambdaInstruction<const double [20][1]>(columnDensity)));
     set.add(*(new Instructions::LambdaInstruction<double, Data::Constant>(multByConst)));
+    set.add(*(new Instructions::LambdaInstruction<const double [20][1]>(columnStack)));
 }
